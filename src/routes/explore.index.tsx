@@ -6,7 +6,7 @@ import { TopicCard } from "@/components/TopicCard";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
-type ExploreSearch = { q: string; category: CategoryId | "all" };
+type ExploreSearch = { q?: string | undefined; category?: CategoryId | "all" | undefined };
 
 export const Route = createFileRoute("/explore/")({
   validateSearch: (search: Record<string, unknown>): ExploreSearch => ({
@@ -36,7 +36,9 @@ export const Route = createFileRoute("/explore/")({
 });
 
 function ExplorePage() {
-  const { q, category } = Route.useSearch();
+  const search = Route.useSearch();
+  const q = search.q ?? "";
+  const category = search.category ?? "all";
   const navigate = useNavigate({ from: "/explore/" });
 
   const results = useMemo(() => {

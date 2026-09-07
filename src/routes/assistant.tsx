@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
-type AssistantSearch = { topic?: string };
+type AssistantSearch = { topic?: string | undefined };
 type Message = { role: "user" | "assistant"; text: string };
 
 export const Route = createFileRoute("/assistant")({
