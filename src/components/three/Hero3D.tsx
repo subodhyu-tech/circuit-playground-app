@@ -1,6 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from "react";
-
-const HeroScene = lazy(() => import("./HeroScene"));
+import { useEffect, useState, type ComponentType } from "react";
 
 function SceneFallback() {
   return (
@@ -11,18 +9,23 @@ function SceneFallback() {
 }
 
 export function Hero3D({ className = "" }: { className?: string }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const [Scene, setScene] = useState<ComponentType | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    import("./HeroScene")
+      .then((m) => {
+        if (!cancelled) setScene(() => m.default as ComponentType);
+      })
+      .catch((err) => console.error("Failed to load 3D scene", err));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className={`relative ${className}`}>
-      {mounted ? (
-        <Suspense fallback={<SceneFallback />}>
-          <HeroScene />
-        </Suspense>
-      ) : (
-        <SceneFallback />
-      )}
+      {Scene ? <Scene /> : <SceneFallback />}
     </div>
   );
 }
