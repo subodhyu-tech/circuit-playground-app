@@ -5,7 +5,7 @@ import { products, productCategories, kindParts } from "@/data/hardware";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
-export const Route = createFileRoute("/hardware")({
+export const Route = createFileRoute("/hardware/")({
   head: () => ({
     meta: [
       { title: "3D Hardware Catalog — Every CPU, GPU & Component | SiliconLab" },
