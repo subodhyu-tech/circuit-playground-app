@@ -131,7 +131,6 @@ function CpuModel(p: Omit<Props, "kind">) {
         {(s) => (
           <mesh castShadow position={[0.55, 0.95, 0.45]}>
             <boxGeometry args={[0.7, 0.12, 0.7]} />
-            {mat="" as never}
             {mat("#7c3aed", s, { metal: 0.4, rough: 0.3 })}
           </mesh>
         )}
@@ -168,7 +167,6 @@ function GpuModel(p: Omit<Props, "kind">) {
           <group>
             <mesh castShadow position={[0, 0.5, 0]}>
               <boxGeometry args={[6.4, 1.1, 2.6]} />
-              {mat="" as never}
               {mat("#111827", s, { metal: 0.7, rough: 0.4 })}
             </mesh>
             {Array.from({ length: 14 }).map((_, i) => (
@@ -397,7 +395,6 @@ function MotherboardModel(p: Omit<Props, "kind">) {
         {(s) => (
           <mesh castShadow position={[2.6, 0.2, -0.2]}>
             <boxGeometry args={[0.5, 0.4, 1.4]} />
-            {mat="" as never}
             {mat("#0b1220", s, { metal: 0.3, rough: 0.7 })}
           </mesh>
         )}
@@ -513,7 +510,6 @@ function SsdModel(p: Omit<Props, "kind">) {
             {[-1.2, 0.1].map((x) => (
               <mesh key={x} position={[x, 0, 0]} castShadow>
                 <boxGeometry args={[1.0, 0.18, 1.1]} />
-                {mat="" as never}
                 {mat("#111827", s, { metal: 0.4, rough: 0.5 })}
               </mesh>
             ))}
