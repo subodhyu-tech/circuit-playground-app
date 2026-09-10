@@ -208,8 +208,8 @@ function GpuModel(p: Omit<Props, "kind">) {
               [1.2, -0.9],
               [0, 1.0],
               [0, -1.0],
-            ].map(([x, z], i) => (
-              <mesh key={i} position={[x, 0, z]} castShadow>
+            ].map((pos, i) => (
+              <mesh key={i} position={[pos[0]!, 0, pos[1]!]} castShadow>
                 <boxGeometry args={[0.5, 0.12, 0.4]} />
                 {mat("#1e293b", s, { metal: 0.4, rough: 0.4 })}
               </mesh>
