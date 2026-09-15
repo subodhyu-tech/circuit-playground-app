@@ -1,6 +1,6 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Lightformer, OrbitControls, Html } from "@react-three/drei";
-import { Suspense, useRef, useState, type ReactNode } from "react";
+import { Suspense, createContext, useContext, useRef, useState, type ReactNode } from "react";
 import * as THREE from "three";
 import type { ModelKind } from "@/data/hardware";
 
@@ -8,9 +8,14 @@ type Props = {
   kind: ModelKind;
   selected: string | null;
   onSelect: (id: string) => void;
+  exploded?: boolean;
+  spin?: boolean;
 };
 
+const ViewerCtx = createContext({ exploded: false });
+
 const ACCENT = "#22d3ee";
+
 
 /* ------------------------------------------------------------------ */
 /* Clickable part wrapper                                              */
@@ -32,12 +37,27 @@ function Part({
   const [hovered, setHovered] = useState(false);
   const group = useRef<THREE.Group>(null);
   const active = selected === id;
+  const { exploded } = useContext(ViewerCtx);
+  const home = useRef<THREE.Vector3 | null>(null);
+  const dir = useRef(new THREE.Vector3());
 
   useFrame((_, delta) => {
     if (!group.current) return;
+    const g = group.current;
     const target = active ? 1.06 : hovered ? 1.03 : 1;
     const k = 1 - Math.exp(-12 * Math.min(delta, 0.05));
-    group.current.scale.lerp(new THREE.Vector3(target, target, target), k);
+    g.scale.lerp(new THREE.Vector3(target, target, target), k);
+
+    if (!home.current) {
+      home.current = g.position.clone();
+      const box = new THREE.Box3().setFromObject(g);
+      const c = box.getCenter(new THREE.Vector3());
+      dir.current.copy(c.lengthSq() < 0.0001 ? new THREE.Vector3(0, 1, 0) : c.normalize());
+    }
+    const goal = exploded
+      ? home.current.clone().add(dir.current.clone().multiplyScalar(1.6))
+      : home.current;
+    g.position.lerp(goal, k * 0.6);
   });
 
   return (
@@ -555,14 +575,15 @@ function SsdModel(p: Omit<Props, "kind">) {
 
 /* ------------------------------------------------------------------ */
 
-function Rig({ kind, selected, onSelect }: Props) {
+function Rig({ kind, selected, onSelect, spin = true }: Props) {
   const group = useRef<THREE.Group>(null);
   useFrame((state, delta) => {
     if (!group.current) return;
     const t = Math.min(delta, 0.05);
     group.current.position.y = Math.sin(state.clock.elapsedTime * 0.8) * 0.08;
-    group.current.rotation.y += t * 0.12;
+    if (spin) group.current.rotation.y += t * 0.12;
   });
+
 
   const inner = { selected, onSelect };
   return (
@@ -576,7 +597,13 @@ function Rig({ kind, selected, onSelect }: Props) {
   );
 }
 
-export default function HardwareModelScene({ kind, selected, onSelect }: Props) {
+export default function HardwareModelScene({
+  kind,
+  selected,
+  onSelect,
+  exploded = false,
+  spin = true,
+}: Props) {
   const distance = kind === "cpu" ? 9 : kind === "ssd" ? 11 : 12;
   return (
     <Canvas
@@ -598,7 +625,9 @@ export default function HardwareModelScene({ kind, selected, onSelect }: Props) 
       <pointLight position={[-8, 3, -4]} intensity={40} color="#7c3aed" />
       <pointLight position={[8, 2, 4]} intensity={30} color="#22d3ee" />
       <Suspense fallback={null}>
-        <Rig kind={kind} selected={selected} onSelect={onSelect} />
+        <ViewerCtx.Provider value={{ exploded }}>
+          <Rig kind={kind} selected={selected} onSelect={onSelect} spin={spin} />
+        </ViewerCtx.Provider>
         <Environment>
           <Lightformer intensity={2} position={[0, 6, 0]} scale={[12, 12, 1]} />
           <Lightformer

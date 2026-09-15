@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Radio, TrendingUp } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { ExternalLink, MessageSquare, Radio, RefreshCw, TrendingUp } from "lucide-react";
 import { categories, categoryById, trending } from "@/data/tech";
+import { getLiveTechFeed } from "@/lib/newsfeed.functions";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/trending")({
@@ -42,10 +45,14 @@ function TrendingPage() {
         </p>
         <h1 className="mt-3 text-4xl font-bold sm:text-5xl">Trending &amp; new technology</h1>
         <p className="mt-4 text-muted-foreground">
-          A curated snapshot of what's moving in hardware right now. Sample entries today — the feed
-          is structured so live sources can be plugged in later.
+          A live stream of hardware, chip and AI news, refreshed automatically, plus our curated
+          explainers underneath.
         </p>
       </header>
+
+      <LiveFeed />
+
+      <h2 className="mt-16 font-display text-2xl font-semibold">Curated explainers</h2>
 
       <div className="mt-8 flex flex-wrap gap-2">
         <button
@@ -109,5 +116,90 @@ function TrendingPage() {
         </p>
       )}
     </div>
+  );
+}
+
+function timeAgo(iso: string) {
+  const mins = Math.max(1, Math.round((Date.now() - Date.parse(iso)) / 60000));
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.round(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.round(hrs / 24)}d ago`;
+}
+
+function LiveFeed() {
+  const fetchFeed = useServerFn(getLiveTechFeed);
+  const { data, isLoading, isFetching, refetch, isError } = useQuery({
+    queryKey: ["live-tech-feed"],
+    queryFn: () => fetchFeed(),
+    refetchInterval: 5 * 60 * 1000,
+    staleTime: 60 * 1000,
+  });
+
+  return (
+    <section className="mt-10">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="flex items-center gap-2 font-display text-2xl font-semibold">
+          <span className="relative flex size-2.5">
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-brand-emerald/70" />
+            <span className="relative inline-flex size-2.5 rounded-full bg-brand-emerald" />
+          </span>
+          Live feed
+        </h2>
+        <button
+          onClick={() => refetch()}
+          className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
+        >
+          <RefreshCw className={`size-3.5 ${isFetching ? "animate-spin" : ""}`} />
+          {data ? `Updated ${timeAgo(data.fetchedAt)}` : "Refresh"}
+        </button>
+      </div>
+
+      {isError && (
+        <p className="mt-6 text-sm text-muted-foreground">
+          The live feed is unreachable right now — curated updates are still below.
+        </p>
+      )}
+
+      <div className="mt-6 grid gap-3 md:grid-cols-2">
+        {isLoading &&
+          Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-24 animate-pulse rounded-2xl border border-border bg-card/40" />
+          ))}
+
+        {data?.stories.map((s) => (
+          <a
+            key={s.id}
+            href={s.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group rounded-2xl border border-border bg-card/50 p-4 transition-colors hover:border-brand-cyan/50 hover:bg-card"
+          >
+            <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+              <span className="rounded-full bg-brand-cyan/15 px-2 py-0.5 font-medium text-brand-cyan">
+                {s.topic}
+              </span>
+              <span className="font-mono">{s.source}</span>
+              <span>·</span>
+              <time>{timeAgo(s.publishedAt)}</time>
+            </div>
+            <h3 className="mt-2 text-sm font-semibold leading-snug group-hover:text-brand-cyan">
+              {s.title}
+            </h3>
+            <div className="mt-2 flex items-center gap-4 text-[11px] text-muted-foreground">
+              <span className="inline-flex items-center gap-1">
+                <TrendingUp className="size-3" /> {s.points}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <MessageSquare className="size-3" /> {s.comments}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <ExternalLink className="size-3" /> Read
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
   );
 }
