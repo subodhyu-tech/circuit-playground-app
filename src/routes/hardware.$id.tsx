@@ -1,6 +1,13 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowLeft, MousePointerClick } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  MousePointerClick,
+  Pause,
+  Sparkles,
+} from "lucide-react";
 import { getProduct, partsFor } from "@/data/hardware";
 import { HardwareViewer } from "@/components/three/HardwareViewer";
 import { Badge } from "@/components/ui/badge";
