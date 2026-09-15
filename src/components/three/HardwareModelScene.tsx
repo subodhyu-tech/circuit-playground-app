@@ -575,14 +575,15 @@ function SsdModel(p: Omit<Props, "kind">) {
 
 /* ------------------------------------------------------------------ */
 
-function Rig({ kind, selected, onSelect }: Props) {
+function Rig({ kind, selected, onSelect, spin = true }: Props) {
   const group = useRef<THREE.Group>(null);
   useFrame((state, delta) => {
     if (!group.current) return;
     const t = Math.min(delta, 0.05);
     group.current.position.y = Math.sin(state.clock.elapsedTime * 0.8) * 0.08;
-    group.current.rotation.y += t * 0.12;
+    if (spin) group.current.rotation.y += t * 0.12;
   });
+
 
   const inner = { selected, onSelect };
   return (
