@@ -94,8 +94,40 @@ function HardwareDetail() {
 
         <div className="flex flex-col gap-5">
           <div className="glass-card rounded-2xl p-5">
-            <div className="flex items-center gap-2 text-xs text-brand-cyan">
-              <MousePointerClick className="size-3.5" /> Click a part on the model
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2 text-xs text-brand-cyan">
+                <MousePointerClick className="size-3.5" /> Click a part on the model
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  {index + 1}/{parts.length}
+                </span>
+                <button
+                  aria-label="Previous part"
+                  onClick={() => step(-1)}
+                  className="rounded-full border border-border p-1.5 text-muted-foreground hover:text-foreground"
+                >
+                  <ChevronLeft className="size-3.5" />
+                </button>
+                <button
+                  aria-label="Next part"
+                  onClick={() => step(1)}
+                  className="rounded-full border border-border p-1.5 text-muted-foreground hover:text-foreground"
+                >
+                  <ChevronRight className="size-3.5" />
+                </button>
+                <button
+                  onClick={() => setTour((v) => !v)}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-medium transition-colors ${
+                    tour
+                      ? "border-brand-violet/60 bg-brand-violet/10 text-brand-violet"
+                      : "border-border text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {tour ? <Pause className="size-3.5" /> : <Sparkles className="size-3.5" />}
+                  {tour ? "Stop tour" : "Guided tour"}
+                </button>
+              </div>
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
               {parts.map((p) => (
