@@ -42,10 +42,14 @@ function TrendingPage() {
         </p>
         <h1 className="mt-3 text-4xl font-bold sm:text-5xl">Trending &amp; new technology</h1>
         <p className="mt-4 text-muted-foreground">
-          A curated snapshot of what's moving in hardware right now. Sample entries today — the feed
-          is structured so live sources can be plugged in later.
+          A live stream of hardware, chip and AI news, refreshed automatically, plus our curated
+          explainers underneath.
         </p>
       </header>
+
+      <LiveFeed />
+
+      <h2 className="mt-16 font-display text-2xl font-semibold">Curated explainers</h2>
 
       <div className="mt-8 flex flex-wrap gap-2">
         <button
