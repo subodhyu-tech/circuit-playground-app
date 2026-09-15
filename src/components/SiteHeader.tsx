@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const nav = [
   { to: "/explore", label: "Explore" },
+  { to: "/hardware", label: "3D Hardware" },
   { to: "/compare", label: "Compare" },
   { to: "/gaming", label: "Gaming" },
   { to: "/trending", label: "Trending" },
