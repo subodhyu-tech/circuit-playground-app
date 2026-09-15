@@ -17,6 +17,7 @@ import { Route as TrendingRouteImport } from './routes/trending'
 import { Route as ExploreIndexRouteImport } from './routes/explore.index'
 import { Route as ExploreSlugRouteImport } from './routes/explore.$slug'
 import { Route as HardwareIndexRouteImport } from './routes/hardware.index'
+import { Route as HardwareIdRouteImport } from './routes/hardware.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,11 @@ const HardwareIndexRoute = HardwareIndexRouteImport.update({
   path: '/hardware/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HardwareIdRoute = HardwareIdRouteImport.update({
+  id: '/hardware/$id',
+  path: '/hardware/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/gaming': typeof GamingRoute
   '/trending': typeof TrendingRoute
   '/explore/$slug': typeof ExploreSlugRoute
+  '/hardware/$id': typeof HardwareIdRoute
   '/explore/': typeof ExploreIndexRoute
   '/hardware/': typeof HardwareIndexRoute
 }
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/gaming': typeof GamingRoute
   '/trending': typeof TrendingRoute
   '/explore/$slug': typeof ExploreSlugRoute
+  '/hardware/$id': typeof HardwareIdRoute
   '/explore': typeof ExploreIndexRoute
   '/hardware': typeof HardwareIndexRoute
 }
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/gaming': typeof GamingRoute
   '/trending': typeof TrendingRoute
   '/explore/$slug': typeof ExploreSlugRoute
+  '/hardware/$id': typeof HardwareIdRoute
   '/explore/': typeof ExploreIndexRoute
   '/hardware/': typeof HardwareIndexRoute
 }
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/gaming'
     | '/trending'
     | '/explore/$slug'
+    | '/hardware/$id'
     | '/explore/'
     | '/hardware/'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/gaming'
     | '/trending'
     | '/explore/$slug'
+    | '/hardware/$id'
     | '/explore'
     | '/hardware'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/gaming'
     | '/trending'
     | '/explore/$slug'
+    | '/hardware/$id'
     | '/explore/'
     | '/hardware/'
   fileRoutesById: FileRoutesById
@@ -130,6 +142,7 @@ export interface RootRouteChildren {
   GamingRoute: typeof GamingRoute
   TrendingRoute: typeof TrendingRoute
   ExploreSlugRoute: typeof ExploreSlugRoute
+  HardwareIdRoute: typeof HardwareIdRoute
   ExploreIndexRoute: typeof ExploreIndexRoute
   HardwareIndexRoute: typeof HardwareIndexRoute
 }
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HardwareIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/hardware/$id': {
+      id: '/hardware/$id'
+      path: '/hardware/$id'
+      fullPath: '/hardware/$id'
+      preLoaderRoute: typeof HardwareIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -202,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   GamingRoute: GamingRoute,
   TrendingRoute: TrendingRoute,
   ExploreSlugRoute: ExploreSlugRoute,
+  HardwareIdRoute: HardwareIdRoute,
   ExploreIndexRoute: ExploreIndexRoute,
   HardwareIndexRoute: HardwareIndexRoute,
 }
