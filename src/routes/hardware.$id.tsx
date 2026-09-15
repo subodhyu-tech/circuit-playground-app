@@ -45,7 +45,25 @@ function HardwareDetail() {
   const { product } = Route.useLoaderData();
   const parts = partsFor(product);
   const [selected, setSelected] = useState<string | null>(parts[0]?.id ?? null);
+  const [tour, setTour] = useState(false);
   const active = parts.find((p) => p.id === selected) ?? parts[0];
+  const index = Math.max(0, parts.findIndex((p) => p.id === active?.id));
+
+  const step = (dir: number) => {
+    const next = parts[(index + dir + parts.length) % parts.length];
+    if (next) setSelected(next.id);
+  };
+
+  useEffect(() => {
+    if (!tour) return;
+    const t = setInterval(() => {
+      setSelected((cur) => {
+        const i = parts.findIndex((p) => p.id === cur);
+        return parts[(i + 1) % parts.length]?.id ?? cur;
+      });
+    }, 6000);
+    return () => clearInterval(t);
+  }, [tour, parts]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
