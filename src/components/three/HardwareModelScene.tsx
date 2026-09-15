@@ -625,7 +625,9 @@ export default function HardwareModelScene({
       <pointLight position={[-8, 3, -4]} intensity={40} color="#7c3aed" />
       <pointLight position={[8, 2, 4]} intensity={30} color="#22d3ee" />
       <Suspense fallback={null}>
-        <Rig kind={kind} selected={selected} onSelect={onSelect} />
+        <ViewerCtx.Provider value={{ exploded }}>
+          <Rig kind={kind} selected={selected} onSelect={onSelect} spin={spin} />
+        </ViewerCtx.Provider>
         <Environment>
           <Lightformer intensity={2} position={[0, 6, 0]} scale={[12, 12, 1]} />
           <Lightformer
