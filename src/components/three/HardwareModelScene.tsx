@@ -1,6 +1,6 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Lightformer, OrbitControls, Html } from "@react-three/drei";
-import { Suspense, useRef, useState, type ReactNode } from "react";
+import { Suspense, createContext, useContext, useRef, useState, type ReactNode } from "react";
 import * as THREE from "three";
 import type { ModelKind } from "@/data/hardware";
 
@@ -8,9 +8,14 @@ type Props = {
   kind: ModelKind;
   selected: string | null;
   onSelect: (id: string) => void;
+  exploded?: boolean;
+  spin?: boolean;
 };
 
+const ViewerCtx = createContext({ exploded: false });
+
 const ACCENT = "#22d3ee";
+
 
 /* ------------------------------------------------------------------ */
 /* Clickable part wrapper                                              */
@@ -32,12 +37,27 @@ function Part({
   const [hovered, setHovered] = useState(false);
   const group = useRef<THREE.Group>(null);
   const active = selected === id;
+  const { exploded } = useContext(ViewerCtx);
+  const home = useRef<THREE.Vector3 | null>(null);
+  const dir = useRef(new THREE.Vector3());
 
   useFrame((_, delta) => {
     if (!group.current) return;
+    const g = group.current;
     const target = active ? 1.06 : hovered ? 1.03 : 1;
     const k = 1 - Math.exp(-12 * Math.min(delta, 0.05));
-    group.current.scale.lerp(new THREE.Vector3(target, target, target), k);
+    g.scale.lerp(new THREE.Vector3(target, target, target), k);
+
+    if (!home.current) {
+      home.current = g.position.clone();
+      const box = new THREE.Box3().setFromObject(g);
+      const c = box.getCenter(new THREE.Vector3());
+      dir.current.copy(c.lengthSq() < 0.0001 ? new THREE.Vector3(0, 1, 0) : c.normalize());
+    }
+    const goal = exploded
+      ? home.current.clone().add(dir.current.clone().multiplyScalar(1.6))
+      : home.current;
+    g.position.lerp(goal, k * 0.6);
   });
 
   return (
