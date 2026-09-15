@@ -597,7 +597,13 @@ function Rig({ kind, selected, onSelect, spin = true }: Props) {
   );
 }
 
-export default function HardwareModelScene({ kind, selected, onSelect }: Props) {
+export default function HardwareModelScene({
+  kind,
+  selected,
+  onSelect,
+  exploded = false,
+  spin = true,
+}: Props) {
   const distance = kind === "cpu" ? 9 : kind === "ssd" ? 11 : 12;
   return (
     <Canvas
