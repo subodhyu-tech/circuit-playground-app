@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Radio, TrendingUp } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { ExternalLink, MessageSquare, Radio, RefreshCw, TrendingUp } from "lucide-react";
 import { categories, categoryById, trending } from "@/data/tech";
+import { getLiveTechFeed } from "@/lib/newsfeed.functions";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/trending")({
