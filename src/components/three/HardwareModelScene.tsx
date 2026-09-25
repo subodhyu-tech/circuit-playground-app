@@ -6,6 +6,7 @@ import type { ModelKind } from "@/data/hardware";
 
 type Props = {
   kind: ModelKind;
+  productId?: string;
   selected: string | null;
   onSelect: (id: string) => void;
   exploded?: boolean;
@@ -574,8 +575,221 @@ function SsdModel(p: Omit<Props, "kind">) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Product-sculpted models                                             */
+/* ------------------------------------------------------------------ */
 
-function Rig({ kind, selected, onSelect, spin = true }: Props) {
+/** RTX 5090 Founders Edition — slim dual flow-through shroud with the
+ *  signature silver X-frame crossing the face of the card. */
+function Rtx5090Model(p: Omit<Props, "kind" | "productId">) {
+  return (
+    <group rotation={[0.35, -0.55, 0]} position={[0, 0.2, 0]}>
+      <Part id="cooler" label="Flow-through heatsink & vapour chamber" {...p}>
+        {(s) => (
+          <group>
+            {/* slim 2-slot body */}
+            <mesh castShadow position={[0, 0.4, 0]}>
+              <boxGeometry args={[6.6, 0.85, 2.7]} />
+              {mat("#0b0f16", s, { metal: 0.8, rough: 0.35 })}
+            </mesh>
+            {/* silver X-frame trim — the 5090 FE signature */}
+            {[Math.PI / 4.6, -Math.PI / 4.6].map((r, i) => (
+              <mesh key={i} position={[0, 0.86, 0]} rotation={[0, r, 0]}>
+                <boxGeometry args={[7.0, 0.08, 0.5]} />
+                {mat("#c7ccd4", s, { metal: 1, rough: 0.18 })}
+              </mesh>
+            ))}
+            {/* fin stack visible at both ends (flow-through) */}
+            {Array.from({ length: 10 }).map((_, i) => (
+              <mesh key={i} position={[-3.1 + i * 0.16, 0.4, 0]}>
+                <boxGeometry args={[0.05, 0.7, 2.5]} />
+                {mat("#334155", s, { metal: 0.9, rough: 0.3 })}
+              </mesh>
+            ))}
+          </group>
+        )}
+      </Part>
+
+      <Part id="fans" label="Dual axial flow-through fans" {...p}>
+        {(s) => (
+          <group position={[0, 0.92, 0]}>
+            {[-1.85, 1.85].map((x) => (
+              <Fan key={x} x={x} state={s} />
+            ))}
+          </group>
+        )}
+      </Part>
+
+      <Part id="gpu-die" label="GB202 GPU die" {...p}>
+        {(s) => (
+          <mesh castShadow position={[0, -0.22, 0]}>
+            <boxGeometry args={[1.5, 0.16, 1.5]} />
+            {mat("#0f172a", s, { metal: 0.5, rough: 0.25 })}
+          </mesh>
+        )}
+      </Part>
+
+      <Part id="vram" label="GDDR7 memory packages" {...p}>
+        {(s) => (
+          <group position={[0, -0.22, 0]}>
+            {[
+              [-1.4, 0.95], [-1.4, -0.95], [1.4, 0.95], [1.4, -0.95],
+              [-0.5, 1.15], [0.5, 1.15], [-0.5, -1.15], [0.5, -1.15],
+            ].map((pos, i) => (
+              <mesh key={i} position={[pos[0]!, 0, pos[1]!]} castShadow>
+                <boxGeometry args={[0.5, 0.12, 0.4]} />
+                {mat("#1e293b", s, { metal: 0.4, rough: 0.4 })}
+              </mesh>
+            ))}
+          </group>
+        )}
+      </Part>
+
+      <Part id="vrm" label="Power delivery (VRM)" {...p}>
+        {(s) => (
+          <group position={[2.4, -0.16, 0]}>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <mesh key={i} position={[0, 0, -1.1 + i * 0.32]} castShadow>
+                <boxGeometry args={[0.6, 0.2, 0.24]} />
+                {mat("#475569", s, { metal: 0.8, rough: 0.3 })}
+              </mesh>
+            ))}
+          </group>
+        )}
+      </Part>
+
+      <Part id="power-connector" label="12V-2x6 power connector" {...p}>
+        {(s) => (
+          <mesh castShadow position={[1.6, 0.95, 1.0]} rotation={[0, 0.35, 0]}>
+            <boxGeometry args={[0.9, 0.3, 0.4]} />
+            {mat("#0b1220", s, { metal: 0.3, rough: 0.6 })}
+          </mesh>
+        )}
+      </Part>
+
+      <Part id="pcie-fingers" label="PCIe 5.0 edge connector" {...p}>
+        {(s) => (
+          <mesh castShadow position={[-1.0, -0.66, 0]}>
+            <boxGeometry args={[3.2, 0.22, 0.16]} />
+            {mat("#c9a227", s, { metal: 1, rough: 0.25 })}
+          </mesh>
+        )}
+      </Part>
+
+      <Part id="outputs" label="Display outputs" {...p}>
+        {(s) => (
+          <group position={[-3.45, 0.25, 0]}>
+            <mesh castShadow>
+              <boxGeometry args={[0.16, 1.6, 2.5]} />
+              {mat("#94a3b8", s, { metal: 0.95, rough: 0.3 })}
+            </mesh>
+            {[-0.8, -0.2, 0.4, 1.0].map((z) => (
+              <mesh key={z} position={[-0.12, 0.05, z]}>
+                <boxGeometry args={[0.1, 0.3, 0.5]} />
+                {mat("#0f172a", s, { metal: 0.2, rough: 0.8 })}
+              </mesh>
+            ))}
+          </group>
+        )}
+      </Part>
+
+      <mesh position={[0, -0.36, 0]} receiveShadow>
+        <boxGeometry args={[6.4, 0.14, 2.5]} />
+        <meshStandardMaterial color="#0a0f14" metalness={0.3} roughness={0.8} />
+      </mesh>
+    </group>
+  );
+}
+
+/** Ryzen 9 9950X — AM5 package with the distinctive octagonal "starfish"
+ *  heat spreader and two core complex dies beside the I/O die. */
+function Ryzen9950xModel(p: Omit<Props, "kind" | "productId">) {
+  return (
+    <group rotation={[0.15, 0.5, 0]}>
+      <Part id="substrate" label="Organic substrate" {...p}>
+        {(s) => (
+          <mesh castShadow receiveShadow position={[0, -0.16, 0]}>
+            <boxGeometry args={[3.4, 0.16, 3.4]} />
+            {mat("#0f5132", s, { metal: 0.2, rough: 0.7 })}
+          </mesh>
+        )}
+      </Part>
+
+      <Part id="ihs" label="Octagonal heat spreader" {...p}>
+        {(s) => (
+          <group position={[0, 0.16, 0]}>
+            {/* AM5 "starfish" IHS: centre plate + 8 arms */}
+            <mesh castShadow>
+              <boxGeometry args={[2.4, 0.24, 2.4]} />
+              {mat("#c9d1d9", s, { metal: 0.95, rough: 0.22 })}
+            </mesh>
+            {Array.from({ length: 8 }).map((_, i) => {
+              const a = (i / 8) * Math.PI * 2 + Math.PI / 8;
+              return (
+                <mesh
+                  key={i}
+                  position={[Math.cos(a) * 1.45, 0, Math.sin(a) * 1.45]}
+                  rotation={[0, -a, 0]}
+                >
+                  <boxGeometry args={[0.75, 0.22, 0.55]} />
+                  {mat("#c9d1d9", s, { metal: 0.95, rough: 0.22 })}
+                </mesh>
+              );
+            })}
+          </group>
+        )}
+      </Part>
+
+      {/* 9950X has TWO core complex dies (CCDs) */}
+      <Part id="compute-die" label="Core complex dies (2× CCD)" {...p}>
+        {(s) => (
+          <group position={[-0.35, 0.95, 0]}>
+            <mesh castShadow position={[0, 0, -0.55]}>
+              <boxGeometry args={[1.0, 0.12, 0.85]} />
+              {mat("#1f2937", s, { metal: 0.4, rough: 0.3 })}
+            </mesh>
+            <mesh castShadow position={[0, 0, 0.55]}>
+              <boxGeometry args={[1.0, 0.12, 0.85]} />
+              {mat("#1f2937", s, { metal: 0.4, rough: 0.3 })}
+            </mesh>
+          </group>
+        )}
+      </Part>
+
+      <Part id="cache" label="L3 cache (64 MB)" {...p}>
+        {(s) => (
+          <mesh castShadow position={[0.75, 0.95, 0.55]}>
+            <boxGeometry args={[0.6, 0.12, 0.6]} />
+            {mat("#f97316", s, { metal: 0.4, rough: 0.3 })}
+          </mesh>
+        )}
+      </Part>
+
+      <Part id="io-die" label="I/O die (cIOD)" {...p}>
+        {(s) => (
+          <mesh castShadow position={[0.75, 0.95, -0.5]}>
+            <boxGeometry args={[0.9, 0.12, 0.7]} />
+            {mat("#0ea5e9", s, { metal: 0.4, rough: 0.35 })}
+          </mesh>
+        )}
+      </Part>
+
+      <Part id="pads" label="AM5 land grid contacts" {...p}>
+        {(s) => (
+          <group position={[0, -0.27, 0]}>
+            <mesh receiveShadow>
+              <boxGeometry args={[3.2, 0.06, 3.2]} />
+              {mat("#b08d3f", s, { metal: 1, rough: 0.3 })}
+            </mesh>
+          </group>
+        )}
+      </Part>
+    </group>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+
+function Rig({ kind, productId, selected, onSelect, spin = true }: Props) {
   const group = useRef<THREE.Group>(null);
   useFrame((state, delta) => {
     if (!group.current) return;

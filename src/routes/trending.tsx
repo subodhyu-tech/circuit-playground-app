@@ -133,6 +133,7 @@ function LiveFeed() {
     queryKey: ["live-tech-feed"],
     queryFn: () => fetchFeed(),
     refetchInterval: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
     staleTime: 60 * 1000,
   });
 
@@ -146,13 +147,18 @@ function LiveFeed() {
           </span>
           Live feed
         </h2>
-        <button
-          onClick={() => refetch()}
-          className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
-        >
-          <RefreshCw className={`size-3.5 ${isFetching ? "animate-spin" : ""}`} />
-          {data ? `Updated ${timeAgo(data.fetchedAt)}` : "Refresh"}
-        </button>
+        <div className="flex items-center gap-3">
+          <span className="hidden font-mono text-[11px] text-muted-foreground sm:inline">
+            Auto-updates every 5 min · Hacker News + DEV Community
+          </span>
+          <button
+            onClick={() => refetch()}
+            className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
+          >
+            <RefreshCw className={`size-3.5 ${isFetching ? "animate-spin" : ""}`} />
+            {data ? `Updated ${timeAgo(data.fetchedAt)}` : "Refresh"}
+          </button>
+        </div>
       </div>
 
       {isError && (
@@ -180,6 +186,7 @@ function LiveFeed() {
                 {s.topic}
               </span>
               <span className="font-mono">{s.source}</span>
+              <span className="rounded-full border border-border px-1.5 py-px text-[10px]">{s.via}</span>
               <span>·</span>
               <time>{timeAgo(s.publishedAt)}</time>
             </div>

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AlertTriangle, Check, Cpu, Gauge, Wand2, Zap } from "lucide-react";
 import type { ModelKind } from "@/data/hardware";
-import { byKind, metricFor, presets } from "@/data/build";
+import { byKind, livePriceUrl, metricFor, presets, pricesReviewed } from "@/data/build";
 
 export const Route = createFileRoute("/planner")({
   head: () => ({
@@ -171,6 +171,15 @@ function PlannerPage() {
                           >
                             3D view
                           </Link>
+                          <a
+                            href={livePriceUrl(o.name)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-brand-emerald hover:underline"
+                          >
+                            Live price
+                          </a>
                         </div>
                       </button>
                     );
@@ -268,7 +277,8 @@ function PlannerPage() {
             )}
 
             <p className="mt-4 text-[11px] text-muted-foreground">
-              Prices and scores are indicative estimates for planning, not live retail pricing.
+              Prices are typical US street prices last reviewed {pricesReviewed} — use the
+              "Live price" link on any part to see today's actual retail listings.
             </p>
           </div>
         </aside>
