@@ -4,6 +4,7 @@ import type { ModelKind } from "@/data/hardware";
 
 type SceneProps = {
   kind: ModelKind;
+  productId?: string;
   selected: string | null;
   onSelect: (id: string) => void;
   exploded?: boolean;

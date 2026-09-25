@@ -6,6 +6,7 @@ import type { ModelKind } from "@/data/hardware";
 
 type Props = {
   kind: ModelKind;
+  productId?: string;
   selected: string | null;
   onSelect: (id: string) => void;
   exploded?: boolean;
