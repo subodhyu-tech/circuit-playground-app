@@ -1,7 +1,10 @@
 import { products, type ModelKind, type Product } from "./hardware";
 
+/** Date the price list was last reviewed against major US retailers. */
+export const pricesReviewed = "September 2026";
+
 export type BuildMetric = {
-  /** Typical street price in USD (approximate, for planning only). */
+  /** Typical current US street price in USD, reviewed against major retailers. */
   price: number;
   /** 0-100 relative gaming strength. */
   gaming: number;
@@ -15,18 +18,18 @@ export type BuildMetric = {
 
 export const metrics: Record<string, BuildMetric> = {
   // CPUs
-  "core-ultra-9-285k": { price: 589, gaming: 86, creator: 96, watts: 250, platform: "LGA1851" },
-  "core-i9-14900k": { price: 479, gaming: 90, creator: 93, watts: 300, platform: "LGA1700" },
-  "ryzen-9-9950x": { price: 579, gaming: 89, creator: 98, watts: 200, platform: "AM5" },
+  "core-ultra-9-285k": { price: 549, gaming: 86, creator: 96, watts: 250, platform: "LGA1851" },
+  "core-i9-14900k": { price: 419, gaming: 90, creator: 93, watts: 300, platform: "LGA1700" },
+  "ryzen-9-9950x": { price: 549, gaming: 89, creator: 98, watts: 200, platform: "AM5" },
   "ryzen-7-9800x3d": { price: 479, gaming: 100, creator: 82, watts: 162, platform: "AM5" },
   "apple-m4-pro": { price: 1999, gaming: 55, creator: 90, watts: 60, platform: "Apple" },
 
   // GPUs
-  "rtx-5090": { price: 1999, gaming: 100, creator: 100, watts: 575 },
+  "rtx-5090": { price: 2399, gaming: 100, creator: 100, watts: 575 },
   "rtx-5070-ti": { price: 749, gaming: 78, creator: 79, watts: 300 },
-  "rtx-4070-super": { price: 599, gaming: 64, creator: 68, watts: 220 },
-  "rx-9070-xt": { price: 599, gaming: 76, creator: 66, watts: 304 },
-  "rx-7900-xtx": { price: 849, gaming: 80, creator: 70, watts: 355 },
+  "rtx-4070-super": { price: 549, gaming: 64, creator: 68, watts: 220 },
+  "rx-9070-xt": { price: 649, gaming: 76, creator: 66, watts: 304 },
+  "rx-7900-xtx": { price: 799, gaming: 80, creator: 70, watts: 355 },
   "arc-b580": { price: 249, gaming: 42, creator: 48, watts: 190 },
 
   // Motherboards
@@ -40,9 +43,14 @@ export const metrics: Record<string, BuildMetric> = {
 
   // Storage
   "pcie5-nvme-2tb": { price: 239, gaming: 92, creator: 98, watts: 11 },
-  "pcie4-nvme-2tb": { price: 139, gaming: 88, creator: 85, watts: 8 },
+  "pcie4-nvme-2tb": { price: 129, gaming: 88, creator: 85, watts: 8 },
   "dramless-qlc-4tb": { price: 199, gaming: 70, creator: 58, watts: 6 },
 };
+
+/** Live-listing search link so users can check today's actual retail price. */
+export function livePriceUrl(productName: string): string {
+  return `https://www.google.com/search?tbm=shop&q=${encodeURIComponent(productName + " price")}`;
+}
 
 export function byKind(kind: ModelKind): Product[] {
   return products.filter((p) => p.kind === kind && metrics[p.id]);
