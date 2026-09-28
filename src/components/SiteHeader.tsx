@@ -7,6 +7,7 @@ const nav = [
   { to: "/explore", label: "Explore" },
   { to: "/hardware", label: "3D Hardware" },
   { to: "/planner", label: "Build Planner" },
+  { to: "/tracker", label: "Budget" },
   { to: "/compare", label: "Compare" },
   { to: "/gaming", label: "Gaming" },
   { to: "/trending", label: "Trending" },
