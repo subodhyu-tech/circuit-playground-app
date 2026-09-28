@@ -14,6 +14,7 @@ import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as GamingRouteImport } from './routes/gaming'
 import { Route as PlannerRouteImport } from './routes/planner'
+import { Route as TrackerRouteImport } from './routes/tracker'
 import { Route as TrendingRouteImport } from './routes/trending'
 import { Route as ExploreIndexRouteImport } from './routes/explore.index'
 import { Route as ExploreSlugRouteImport } from './routes/explore.$slug'
@@ -43,6 +44,11 @@ const GamingRoute = GamingRouteImport.update({
 const PlannerRoute = PlannerRouteImport.update({
   id: '/planner',
   path: '/planner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackerRoute = TrackerRouteImport.update({
+  id: '/tracker',
+  path: '/tracker',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TrendingRoute = TrendingRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/compare': typeof CompareRoute
   '/gaming': typeof GamingRoute
   '/planner': typeof PlannerRoute
+  '/tracker': typeof TrackerRoute
   '/trending': typeof TrendingRoute
   '/explore/$slug': typeof ExploreSlugRoute
   '/hardware/$id': typeof HardwareIdRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/compare': typeof CompareRoute
   '/gaming': typeof GamingRoute
   '/planner': typeof PlannerRoute
+  '/tracker': typeof TrackerRoute
   '/trending': typeof TrendingRoute
   '/explore/$slug': typeof ExploreSlugRoute
   '/hardware/$id': typeof HardwareIdRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/compare': typeof CompareRoute
   '/gaming': typeof GamingRoute
   '/planner': typeof PlannerRoute
+  '/tracker': typeof TrackerRoute
   '/trending': typeof TrendingRoute
   '/explore/$slug': typeof ExploreSlugRoute
   '/hardware/$id': typeof HardwareIdRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/compare'
     | '/gaming'
     | '/planner'
+    | '/tracker'
     | '/trending'
     | '/explore/$slug'
     | '/hardware/$id'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/compare'
     | '/gaming'
     | '/planner'
+    | '/tracker'
     | '/trending'
     | '/explore/$slug'
     | '/hardware/$id'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/compare'
     | '/gaming'
     | '/planner'
+    | '/tracker'
     | '/trending'
     | '/explore/$slug'
     | '/hardware/$id'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   CompareRoute: typeof CompareRoute
   GamingRoute: typeof GamingRoute
   PlannerRoute: typeof PlannerRoute
+  TrackerRoute: typeof TrackerRoute
   TrendingRoute: typeof TrendingRoute
   ExploreSlugRoute: typeof ExploreSlugRoute
   HardwareIdRoute: typeof HardwareIdRoute
@@ -195,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/planner'
       fullPath: '/planner'
       preLoaderRoute: typeof PlannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tracker': {
+      id: '/tracker'
+      path: '/tracker'
+      fullPath: '/tracker'
+      preLoaderRoute: typeof TrackerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/trending': {
@@ -241,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   CompareRoute: CompareRoute,
   GamingRoute: GamingRoute,
   PlannerRoute: PlannerRoute,
+  TrackerRoute: TrackerRoute,
   TrendingRoute: TrendingRoute,
   ExploreSlugRoute: ExploreSlugRoute,
   HardwareIdRoute: HardwareIdRoute,
