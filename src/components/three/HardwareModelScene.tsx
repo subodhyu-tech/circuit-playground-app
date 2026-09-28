@@ -6,7 +6,7 @@ import type { ModelKind } from "@/data/hardware";
 
 type Props = {
   kind: ModelKind;
-  productId?: string;
+  productId?: string | undefined;
   selected: string | null;
   onSelect: (id: string) => void;
   exploded?: boolean;
@@ -800,10 +800,13 @@ function Rig({ kind, productId, selected, onSelect, spin = true }: Props) {
 
 
   const inner = { selected, onSelect };
+  const custom = productId === "rtx-5090" ? "rtx" : productId === "ryzen-9-9950x" ? "ryzen" : null;
   return (
     <group ref={group}>
-      {kind === "cpu" && <CpuModel {...inner} />}
-      {kind === "gpu" && <GpuModel {...inner} />}
+      {custom === "rtx" && <Rtx5090Model {...inner} />}
+      {custom === "ryzen" && <Ryzen9950xModel {...inner} />}
+      {!custom && kind === "cpu" && <CpuModel {...inner} />}
+      {!custom && kind === "gpu" && <GpuModel {...inner} />}
       {kind === "motherboard" && <MotherboardModel {...inner} />}
       {kind === "ram" && <RamModel {...inner} />}
       {kind === "ssd" && <SsdModel {...inner} />}
@@ -813,6 +816,7 @@ function Rig({ kind, productId, selected, onSelect, spin = true }: Props) {
 
 export default function HardwareModelScene({
   kind,
+  productId,
   selected,
   onSelect,
   exploded = false,
@@ -840,7 +844,7 @@ export default function HardwareModelScene({
       <pointLight position={[8, 2, 4]} intensity={30} color="#22d3ee" />
       <Suspense fallback={null}>
         <ViewerCtx.Provider value={{ exploded }}>
-          <Rig kind={kind} selected={selected} onSelect={onSelect} spin={spin} />
+          <Rig kind={kind} productId={productId} selected={selected} onSelect={onSelect} spin={spin} />
         </ViewerCtx.Provider>
         <Environment>
           <Lightformer intensity={2} position={[0, 6, 0]} scale={[12, 12, 1]} />
