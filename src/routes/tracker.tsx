@@ -239,7 +239,9 @@ function TrackerPage() {
                     <span className={total > street ? "text-destructive" : "text-brand-cyan"}>
                       {total > street
                         ? `${usd(total - street)} over street price`
-                        : `Saved ${usd(street - total)} vs street price`}
+                        : total === street
+                          ? "Matches street price"
+                          : `Saved ${usd(street - total)} vs street price`}
                     </span>
                   </div>
                 </div>
