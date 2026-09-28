@@ -87,6 +87,7 @@ function HardwareDetail() {
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
         <HardwareViewer
           kind={product.kind}
+          productId={product.id}
           selected={selected}
           onSelect={setSelected}
           className="h-[420px] lg:h-[560px]"
